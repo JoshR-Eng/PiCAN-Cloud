@@ -3,7 +3,7 @@ import can
 from can_bus import CAN_Bus
 
 
-TX = 0x100
+TX = 0x200
 
 
 def main():
@@ -18,6 +18,13 @@ def main():
 
 			if received_msg is None:
 				print('Timeout, no message')
+			else:
+				received_data = int.from_bytes(received_msg.data[0:2], 'little')
+				print("received integer: ", received_data)
+
+				data_to_send = received_data.to_bytes(2, 'little')
+				can0.send_data(arb_id=TX, data=data_to_send)
+				print("Sent back", data_to_send)
 	except KeyboardInterrupt:
 		pass
 
