@@ -18,7 +18,7 @@ class logger:
             file_name = f"log_{timestamp}.csv"
             file_path = os.path.join(self.directory_path, file_name)
 
-            with open(self.file_path, mode='w', newline='') as log:
+            with open(file_path, mode='w', newline='') as log:
                 writer = csv.writer(log)
                 writer.writerow(self.file_headers)
             return file_path
