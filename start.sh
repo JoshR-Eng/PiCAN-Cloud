@@ -10,5 +10,5 @@ pip3 install -r requirements.txt
 
 # Run CAN test
 echo "Starting CAN Test..."
-python3 Scripts/other_can_test.py
+python -m Scripts.main
  
