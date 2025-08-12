@@ -66,7 +66,7 @@ def main():
                 payload = {
                     "temperature": temperature,
                     "dt": 0.5,
-                    "client_send_time": received_frame['pi_received_time']
+                    "client_send_time": received_frame['pi_receive_time']
                 }
                 cloud_response = cloud.send_dataset(payload=payload)
 

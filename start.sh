@@ -10,4 +10,4 @@ pip3 install -r requirements.txt
 
 # Run CAN test
 echo "Starting CAN Test..."
-python -m main.py
+python main.py
