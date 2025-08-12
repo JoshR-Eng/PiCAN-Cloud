@@ -1,6 +1,6 @@
 import os
 import can
-from src.can_bus import CAN_Bus
+from src.PiCAN.can_bus import CAN_Bus
 
 
 TX = 0x200
