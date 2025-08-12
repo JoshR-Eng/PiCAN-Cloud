@@ -13,6 +13,7 @@ from src.DataHandling.CAN_buffer import CAN_buffer
 from src.DataHandling.log import logger
 import os 
 import yaml
+from dotenv import load_dotenv
 
 # =================================================================
 # ------------------------- config import -------------------------
