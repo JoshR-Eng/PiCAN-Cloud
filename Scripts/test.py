@@ -17,7 +17,7 @@ def main():
 
             if received_frame is not None:
                 temperature = Temperature_Signal.decode(received_frame['raw_frame'])
-                print(f"Received the value: {temperature}")
+                print(f"Received the value: {temperature:.2f}")
             else:
                 print("\nNo message Received")
             sleep(3)
