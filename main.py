@@ -18,6 +18,8 @@ from dotenv import load_dotenv
 # =================================================================
 # ------------------------- config import -------------------------
 # =================================================================
+load_dotenv()
+
 with open('config.yaml', 'r') as yaml_config:
     config = yaml.safe_load(yaml_config)
 
