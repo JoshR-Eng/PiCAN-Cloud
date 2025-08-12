@@ -18,7 +18,8 @@ def main():
             if received_frame is not None:
                 temperature = Temperature_Signal.decode(received_frame['raw_frame'])
                 print(f"Received the value: {temperature}")
-
+            else:
+                print("\nNo message Received")
             sleep(3)
     except KeyboardInterrupt:
         pass
