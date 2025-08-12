@@ -74,9 +74,11 @@ def main():
                 # Sending can message should provide dictionary
                 # key:pair values match variables described in config
                 cloud_response = cloud.send_dataset(temperature)
-                cooling_power = cloud_response['cooling_power']
+                cooling_power = float("{:.2f}".format(cloud_response['cooling_power']))
+                print(f"Cloud returned cooling power: {cooling_power}")
                 encoded_cooling_power = Tx_cooling_power_signal.encode(cooling_power)
                 can0.send_message(arb_id=TX, data=encoded_cooling_power)
+                print(f"\n\tCAN TX message sent to dSPACE")
 
             else:
                 print("\nNo message Received")
