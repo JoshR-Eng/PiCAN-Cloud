@@ -6,7 +6,7 @@ source ./venv/bin/activate
 
 # Install dependencies
 echo "Installing Python Dependencies"
-pip3 install -r Scripts/requirements.txt
+pip3 install -r requirements.txt
 
 # Run CAN test
 echo "Starting CAN Test..."
