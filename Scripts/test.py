@@ -14,8 +14,10 @@ def main():
         while True:
         
             received_frame = can0.receive_message(RX, timeout=0.1) 
-            temperature = Temperature_Signal.decode(received_frame['raw_frame'])
-            print(f"Received the value: {temperature}")
+
+            if received_frame is not None:
+                temperature = Temperature_Signal.decode(received_frame['raw_frame'])
+                print(f"Received the value: {temperature}")
 
             sleep(3)
     except KeyboardInterrupt:
