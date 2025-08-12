@@ -41,13 +41,12 @@ LOG_FILE_PATH = os.getenv('LOG_FILE_PATH')
 can0 = CAN_Bus(channel='can0', bitrate=bitrate)
 Rx_temperature_signal = Signal(length=2, start_byte=0, factor=0.01, offset=0)
 Tx_cooling_power_signal = Signal(length=2, start_byte=0, factor=0.01, offset=0)
-can_buffer = CAN_buffer(buffer_size=100)
 
 # cloud
 cloud = Cloud(URL=CloudURL, timeout=1, return_variables=cloud_variables)
 
 # log
-log_header = cloud_variables.append('client_recieve_time')
+log_header = cloud_variables + ['client_recieve_time']
 log = logger(file_path=LOG_FILE_PATH, file_headers=cloud_variables)
 
 
@@ -65,20 +64,27 @@ def main():
             if received_frame is not None:
                 temperature = Rx_temperature_signal.decode(received_frame['raw_frame'])
                 print(f"Received the value: {temperature:.2f}")
+
+                # Send payload to the cloud
                 payload = {
                     "temperature": temperature,
                     "dt": 0.5,
                     "client_send_time": received_frame['pi_received_time']
                 }
+                cloud_response = cloud.send_dataset(payload=payload)
 
-                # Sending can message should provide dictionary
-                # key:pair values match variables described in config
-                cloud_response = cloud.send_dataset(temperature)
-                cooling_power = float("{:.2f}".format(cloud_response['cooling_power']))
-                print(f"Cloud returned cooling power: {cooling_power}")
-                encoded_cooling_power = Tx_cooling_power_signal.encode(cooling_power)
-                can0.send_message(arb_id=TX, data=encoded_cooling_power)
-                print(f"\n\tCAN TX message sent to dSPACE")
+                # Check response is valid
+                if cloud_response and 'cooling_power' in cloud_response:
+                    cooling_power = float("{:.2f}".format(cloud_response['cooling_power']))
+                    print(f"Cloud returned cooling power: {cooling_power}")
+
+                    # Send command to dSPACE
+                    encoded_cooling_power = Tx_cooling_power_signal.encode(cooling_power)
+                    can0.send_message(arb_id=TX, data=encoded_cooling_power)
+                    print(f"\n\tCAN TX message sent to dSPACE")
+
+                    # Log Data
+                    log.append(cloud_response)
 
             else:
                 print("\nNo message Received")
