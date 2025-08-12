@@ -47,7 +47,7 @@ cloud = Cloud(URL=CloudURL, timeout=1, return_variables=cloud_variables)
 
 # log
 log_header = cloud_variables + ['client_recieve_time']
-log = logger(file_path='Logs/', file_headers=log_header)
+log = logger(directory_path='Logs/', file_headers=log_header)
 
 
 # =================================================================
