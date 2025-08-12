@@ -29,9 +29,6 @@ bitrate = config['can']['bitrate']
 cloud_variables = config['cloud']['variables']
 CloudURL = os.getenv('CloudURL')
 
-# Log
-LOG_FILE_PATH = os.getenv('LOG_FILE_PATH')
-
 
 # =================================================================
 # -------------------------     setup     -------------------------
@@ -47,7 +44,7 @@ cloud = Cloud(URL=CloudURL, timeout=1, return_variables=cloud_variables)
 
 # log
 log_header = cloud_variables + ['client_recieve_time']
-log = logger(file_path=LOG_FILE_PATH, file_headers=cloud_variables)
+log = logger(file_path='Logs/', file_headers=log_header)
 
 
 # =================================================================

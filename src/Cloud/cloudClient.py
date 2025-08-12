@@ -29,16 +29,14 @@ class Cloud:
 
             if response.status_code == 200:
                 cloud_return = response.json()
-                try:
-                    if list:
-                        feedback = {}
-                        for variable in self.return_variables:
-                            feedback[variable] = cloud_return.get(variable)
-                            feedback['client_recieve_time'] = client_recieve_time
-                        return feedback
-                    else:
-                        print("ERROR: No expected return from cloud")
-                except TypeError("ERROR: variable(s) expect from cloud do not exist"):
+                if self.return_variables:
+                    feedback = {}
+                    for variable in self.return_variables:
+                        feedback[variable] = cloud_return.get(variable)
+                        feedback['client_recieve_time'] = client_recieve_time
+                    return feedback
+                else:
+                    print("ERROR: No expected return from cloud")
                     return None
             else:
                 print(f"ERROR: Cloud Status Code {response.status_code} ")
