@@ -40,17 +40,20 @@ class CAN_Bus:
 
     
     def receive_message(self, arb_id: int, timeout: float = 0.1) -> can.Message:
+        """ Returns a dictionary containting 'raw_frame' and 'pi_receive_time' """
         try:
             msg = self.bus.recv(timeout)
-            if msg.arbiration_id == arb_id:
-                # physical value = (raw value * factor +offset) * unit of measurement
-                received = {
-                    'raw_frame': msg.data,
-                    'pi_receive_time': msg.timestamp
+            if msg is not None:
+                if msg.arbitration_id == arb_id:
+                    received = {
+                        'raw_frame': msg.data,
+                        'pi_received_time': msg.timestamp
                     }
-                return received
-            else: 
-                print("ERROR: Specified arbiration ID didn't match CAN data")
+                    return received
+                else:
+                    print(f"INFO: Received message with non-matching ID: {msg.arbitration_id}")
+            else:
+                return None
         except can.CanError as e:
             print(f'Receive Error [CAN]: {e}')
             return None
