@@ -47,6 +47,7 @@ can_buffer = CAN_buffer(buffer_size=100)
 cloud = Cloud(URL=CloudURL, timeout=1, return_variables=cloud_variables)
 
 # log
+log_header = cloud_variables.append('client_recieve_time')
 log = logger(file_path=LOG_FILE_PATH, file_headers=cloud_variables)
 
 
@@ -62,8 +63,13 @@ def main():
             received_frame = can0.receive_message(RX, timeout=0.1) 
 
             if received_frame is not None:
-                temperature = Temperature_Signal.decode(received_frame['raw_frame'])
+                temperature = Rx_temperature_signal.decode(received_frame['raw_frame'])
                 print(f"Received the value: {temperature:.2f}")
+                payload = {
+                    "temperature": temperature,
+                    "dt": 0.5,
+                    "client_send_time": received_frame['pi_received_time']
+                }
 
                 # Sending can message should provide dictionary
                 # key:pair values match variables described in config

@@ -1,10 +1,7 @@
 cloud:
   variables:
-    - first_can_value
-    - first_can_time
-    - last_can_value
-    - last_can_time
     - cooling_power
+    - client_send_time
 
 can:
   RX: 0x100
