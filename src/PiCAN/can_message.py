@@ -1,5 +1,3 @@
-import can
-
 class Signal: 
     """
     A that defines the signal in a CAN message
@@ -29,12 +27,12 @@ class Signal:
 
     def encode(self, physical_value: float) -> bytearray:
         """ Takes physical value and outputs it in a string of bytes"""
-        raw_signal_int = (physical_value - self.offset) / self.factor
+        raw_signal_int = int((physical_value - self.offset) / self.factor)
 
         if self.is_little_endian:
-            raw_signal_data = int.to_bytes(raw_signal_int, 'little')
+            raw_signal_data = raw_signal_int.to_bytes(self.length, 'little')
         else:
-            raw_signal_data = int.to_bytes(raw_signal_int, 'big')
+            raw_signal_data = raw_signal_int.to_bytes(self.length, 'big')
         
         return raw_signal_data
 

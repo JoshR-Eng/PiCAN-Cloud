@@ -1,6 +1,6 @@
 from src.PiCAN.can_bus import CAN_Bus
 from src.PiCAN.can_message import Signal
-from time import wait
+from time import sleep
 
 
 RX = 200
@@ -17,7 +17,7 @@ def main():
             temperature = Temperature_Signal.decode(received_frame['raw_frame'])
             print(f"Received the value: {temperature}")
 
-            wait(5)
+            sleep(3)
     except KeyboardInterrupt:
         pass
 
