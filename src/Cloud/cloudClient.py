@@ -31,9 +31,11 @@ class Cloud:
                 cloud_return = response.json()
                 if self.return_variables:
                     feedback = {}
+                    
                     for variable in self.return_variables:
                         feedback[variable] = cloud_return.get(variable)
-                        feedback['client_recieve_time'] = client_recieve_time
+
+                    feedback['client_recieve_time'] = client_recieve_time
                     return feedback
                 else:
                     print("ERROR: No expected return from cloud")
