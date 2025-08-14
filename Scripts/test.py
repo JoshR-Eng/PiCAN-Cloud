@@ -1,26 +1,56 @@
-from src.PiCAN.can_bus import CAN_Bus
-from src.PiCAN.can_message import Signal
-from time import sleep
+from src.Cloud.cloudClient import Cloud
+from src.PiCAN.can_handler import CAN_Handler
+from src.DataHandling.can_buffer import CAN_buffer
+from src.DataHandling.log import logger
+import os 
+import yaml
+from dotenv import load_dotenv
+from datetime import datetime, timezone
+
+# =================================================================
+# ------------------------- config import -------------------------
+# =================================================================
+load_dotenv()
+
+with open('config.yaml', 'r') as yaml_config:
+    config = yaml.safe_load(yaml_config)
+
+# CAN Values
+rx = config['can']['RX']
+tx = config['can']['TX']
+bitrate = config['can']['bitrate']
+dbc_file_path = config['can']['dbc']
+
+# Cloud Values
+cloud_variables = config['cloud']['variables']
+CloudURL = os.getenv('CloudURL')
 
 
-RX = 200
-Temperature_Signal = Signal(length=2, start_byte=0, factor=0.01, offset=0)
+# =================================================================
+# -------------------------     setup     -------------------------
+# =================================================================
+
+# can
+can0 = CAN_Handler(channel='can0', bitrate='bitrate', dbc_file=dbc_file_path)
+
+
+# =================================================================
+# -------------------------      loop     -------------------------
+# =================================================================
 
 def main():
-
-    can0 = CAN_Bus(channel='can0', bitrate=500000)
 
     try:
         while True:
         
-            received_frame = can0.receive_message(RX, timeout=0.1) 
+            received_frame = can0.receive_message(timeout=0.1)
 
-            if received_frame is not None:
-                temperature = Temperature_Signal.decode(received_frame['raw_frame'])
-                print(f"Received the value: {temperature:.2f}")
+            if received_frame:
+                print(received_frame)
+                
             else:
-                print("\nNo message Received")
-            sleep(3)
+                print("ERROR: NO CAN Received")
+
     except KeyboardInterrupt:
         pass
 

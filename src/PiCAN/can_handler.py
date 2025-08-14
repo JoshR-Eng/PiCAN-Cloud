@@ -49,8 +49,7 @@ class CAN_Handler:
             print(f"ERROR: Failed to send message\n\t{e}")
 
     
-    def receive_message(self, arb_id: int, timeout: float = 0.1):
-        """ Returns a dictionary containting 'raw_frame' and 'pi_receive_time' """
+    def receive_message(self, timeout: float = 0.1):
         try:
             msg = self.bus.recv(timeout)
             if msg:

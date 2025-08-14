@@ -41,13 +41,6 @@ CloudURL = os.getenv('CloudURL')
 # can
 can0 = CAN_Handler(channel='can0', bitrate='bitrate', dbc_file=dbc_file_path)
 
-# cloud
-cloud = Cloud(URL=CloudURL, timeout=3, return_variables=cloud_variables)
-
-# log
-log_header = cloud_variables + ['client_recieve_time']
-log = logger(directory_path='Logs/', file_headers=log_header)
-
 
 # =================================================================
 # -------------------------      loop     -------------------------
@@ -58,39 +51,19 @@ def main():
     try:
         while True:
         
-            received_frame = can0.receive_message(rx, timeout=0.1) 
-
-            if received_frame is not None:
-                temperature = rx_temperature_signal.decode(received_frame['raw_frame'])
-                print(f"Received the value: {temperature:.2f}")
-
-                # Send payload to the cloud
-                payload = {
-                    "temperature": temperature,
-                    "dt": 0.5,
-                    "client_send_time": datetime.now(timezone.utc)
-                }
-                print(f"Payload being sent:\n\ttemperature - {payload['temperature']}\n\tdt - {payload['dt']}\n\tclient_send_time - {payload['client_send_time']}")
-                cloud_response = cloud.send_dataset(payload=payload)
-
-                # Check response is valid
-                if cloud_response and 'cooling_power' in cloud_response:
-                    cooling_power = float("{:.2f}".format(cloud_response['cooling_power']))
-                    print(f"Cloud returned cooling power: {cooling_power}")
-
-                    # Send command to dSPACE
-                    encoded_cooling_power = tx_cooling_power_signal.encode(cooling_power)
-                    can0.send_message(arb_id=tx, data=encoded_cooling_power)
-                    print(f"\n\tCAN TX message sent to dSPACE")
-
-                    
-                    log.append(cloud_response) # Log Data
-                    can0.flush_rx()            # Flush any stale data in cache
-                else:
-                    print(f"ERROR: Cloud Response missing - Response = {cloud_response}")
-
+            received_frame = can0.receive_message(timeout=0.1)
+            if received_frame:
+                print(received_frame)
             else:
                 print("ERROR: NO CAN Received")
+
+            RPi_battery_internal_resistance = 0.0005
+            payload = {'RPiBattery_Internal_Resistance': RPi_battery_internal_resistance}
+            try:
+                can0.send_message(signals=payload, message_name='RPi')
+                print(f"Pi Send CAN Message to dSPACE:\n{payload}")
+            except:
+                print(f"ERROR: Failed to send CAN message")
 
     except KeyboardInterrupt:
         pass
