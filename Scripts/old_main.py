@@ -7,13 +7,14 @@ ADD FILE DESCRIPTION
 # =================================================================
 
 from src.Cloud.cloudClient import Cloud
-from src.PiCAN.can_handler import CAN_Handler
+from src.PiCAN.can_bus import CAN_Bus
+from src.PiCAN.can_message import Signal
 from src.DataHandling.can_buffer import CAN_buffer
 from src.DataHandling.log import logger
 import os 
 import yaml
 from dotenv import load_dotenv
-from datetime import datetime, timezone
+import json
 
 # =================================================================
 # ------------------------- config import -------------------------
@@ -27,7 +28,6 @@ with open('config.yaml', 'r') as yaml_config:
 rx = config['can']['RX']
 tx = config['can']['TX']
 bitrate = config['can']['bitrate']
-dbc_file_path = config['can']['dbc']
 
 # Cloud Values
 cloud_variables = config['cloud']['variables']
@@ -39,7 +39,9 @@ CloudURL = os.getenv('CloudURL')
 # =================================================================
 
 # can
-can0 = CAN_Handler(channel='can0', bitrate='bitrate', dbc_file=dbc_file_path)
+can0 = CAN_Bus(channel='can0', bitrate=bitrate)
+rx_temperature_signal = Signal(length=2, start_byte=0, factor=0.01, offset=0)
+tx_cooling_power_signal = Signal(length=2, start_byte=0, factor=0.01, offset=0)
 
 # cloud
 cloud = Cloud(URL=CloudURL, timeout=3, return_variables=cloud_variables)
@@ -68,7 +70,7 @@ def main():
                 payload = {
                     "temperature": temperature,
                     "dt": 0.5,
-                    "client_send_time": datetime.now(timezone.utc)
+                    "client_send_time": received_frame['pi_receive_time']
                 }
                 print(f"Payload being sent:\n\ttemperature - {payload['temperature']}\n\tdt - {payload['dt']}\n\tclient_send_time - {payload['client_send_time']}")
                 cloud_response = cloud.send_dataset(payload=payload)
@@ -83,9 +85,8 @@ def main():
                     can0.send_message(arb_id=tx, data=encoded_cooling_power)
                     print(f"\n\tCAN TX message sent to dSPACE")
 
-                    
-                    log.append(cloud_response) # Log Data
-                    can0.flush_rx()            # Flush any stale data in cache
+                    # Log Data
+                    log.append(cloud_response)
                 else:
                     print(f"ERROR: Cloud Response missing - Response = {cloud_response}")
 

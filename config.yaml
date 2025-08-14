@@ -7,3 +7,4 @@ can:
   RX: 0x100
   TX: 0x200
   bitrate: 500000
+  dbc:
