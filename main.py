@@ -14,6 +14,7 @@ import os
 import yaml
 from dotenv import load_dotenv
 from datetime import datetime, timezone
+from time import sleep
 
 # =================================================================
 # ------------------------- config import -------------------------
@@ -64,7 +65,7 @@ def main():
                 print(f"Pi Send CAN Message to dSPACE:\n{payload}")
             except:
                 print(f"ERROR: Failed to send CAN message")
-
+        sleep(2)
     except KeyboardInterrupt:
         pass
 

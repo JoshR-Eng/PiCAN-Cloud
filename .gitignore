@@ -6,3 +6,5 @@ Logs/
 *.log
 *.csv
 Resources/
+PiCAN.dbc_cache.mat
+PiCAN.dbc_log.html
