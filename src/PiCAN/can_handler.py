@@ -2,6 +2,32 @@ import can
 import cantools
 import os
 
+class CAN_Listener(can.Listener):
+    """
+    can.listener that decodes and stores most recent message recieved
+    event driven real-time system instead of polling
+    """
+    def __init__(self, dbc_file: cantools.database.Database):
+        super().__init__()
+        self.dbc = dbc_file
+        self.lastest_can_message = None
+
+    def on_message_received(self, msg: can.Message):
+        """
+        Called by notifier when new message arrives
+        """
+        try:
+            self.lastest_can_message = self.dbc.decode_message(msg.arbitration_id, msg.data)
+        except KeyError:
+             print(f"INFO: Received message with non-matching ID: {msg.arbitration_id}")
+             pass # Ignore messages not in DBC
+
+    def get_latest_data(self):
+        """
+        Retrieves lastest stored Data
+        """
+        return self.lastest_can_message
+
 class CAN_Handler:
     """
     Higher level CAN handler that uses DBC file to 
@@ -29,6 +55,9 @@ class CAN_Handler:
         except Exception as e:
             print(f"ERROR: Failed to initalise CAN: {e}")
             raise
+        self.listener = CAN_Listener(self.dbc)
+        self.notifier = can.Notifier(self.bus, [self.listener])
+        print("\tCAN Notifier started in the background")
 
 
     def setup_bus(self):
@@ -51,31 +80,17 @@ class CAN_Handler:
     
     def receive_message(self, timeout: float = 0.1):
         try:
-            msg = self.bus.recv(timeout)
-            if msg:
-                try:
-                    received = self.dbc.decode_message(msg.arbitration_id, msg.data)
-                    return received
-                except KeyError:
-                    print(f"INFO: Received message with non-matching ID: {msg.arbitration_id}")
-                    return None
-            else:
-                print("INFO: No message received within timeout period")
-                return None
+            return self.listener.get_latest_data()
         except can.CanError as e:
             print(f'ERROR: tried to receive CAN message {e}')
             return None
         
 
     def disable_can(self):
-        self.bus.shutdown()
-        os.system(f'sudo ifconfig {self.channel} down')
-
-    
-    def flush_rx(self):
-        while True:
-            msg = self.bus.recv(timeout=0.1)
-            if msg is None:
-                break
-        return None
-    
+        if self.notifier:
+            self.notifier.stop()
+            print("\n\tCAN Notifier stopped.")
+        if self.bus:
+            self.bus.shutdown()
+            os.system(f'sudo ifconfig {self.channel} down')
+            print("\tCAN bus shut down")
