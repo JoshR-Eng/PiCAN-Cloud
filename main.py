@@ -66,7 +66,7 @@ def main():
                 print("ERROR: NO CAN Received")
 
             
-            sleep(1)
+            
     except KeyboardInterrupt:
         pass
 
