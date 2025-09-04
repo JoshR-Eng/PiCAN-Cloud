@@ -35,7 +35,7 @@ class Cloud:
                     for variable in self.return_variables:
                         feedback[variable] = cloud_return.get(variable)
 
-                    feedback['client_recieve_time'] = client_recieve_time
+                    feedback['time_recv'] = client_recieve_time
                     return feedback
                 else:
                     print("ERROR: No expected return from cloud")

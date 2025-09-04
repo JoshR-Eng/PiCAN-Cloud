@@ -1,8 +1,25 @@
 cloud:
-  variables:
+  cloud_return_variables:
+    - time_sent
+    - temp
+    - internal_resistance
+    - p 
+    - innovation
+  send_cloud_variables:
+    - time_sent
+    - temp
+    - temp_prev
+    - current
     - cooling_power
-    - client_send_time
+    - dt
+    - internal_resistance
+    - p
+  
 
 can:
   bitrate: 500000
   dbc: PiCAN.dbc
+
+rls:
+  internal_resistance: 0.0020664
+  covariance: 0.995
