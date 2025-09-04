@@ -31,7 +31,6 @@ cloud_return_variables = config['cloud']['cloud_return_variables']
 CloudURL = os.getenv('CloudURL')
 
 # Globally define inital values for RLS
-internal_resistance = config['rls']['r']
 covariance = config['rls']['covariance']
 time_prev = None
 temp_prev = None
