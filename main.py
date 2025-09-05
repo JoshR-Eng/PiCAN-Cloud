@@ -111,7 +111,7 @@ def main():
                     print("ERROR: No response from cloud")
             else:
                 print("ERROR: NO CAN Received")
-
+                sleep(1)
             
             
     except KeyboardInterrupt:
