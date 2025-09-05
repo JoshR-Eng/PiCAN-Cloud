@@ -89,6 +89,9 @@ def main():
                 
                 time_sent = time()          # Remeber to assign this to time_prev after
                 dt = time_sent - time_prev
+
+                if internal_resistance == 0:
+                    internal_resistance = rbat_initial
                 
                 payload = {
                     'time_sent': time_sent,
@@ -109,9 +112,13 @@ def main():
                         if cloud_warmup_counter == cloud_warmup_period -2:
                             print("\n\n\n\t -------- Warmup Complete. Going Live... -------- \n\n\n")
                         cloud_warmup_counter += 1
-                        can_payload = {'RPiBattery_Internal_Resistance': rbat_initial}
+                        # Need to send inital value other wise rbat=0 which will break the DT
+                        can_payload = {'RPiBattery_Internal_Resistance': rbat_initial} #
+                        print(f"Sent {can_payload} back to dSPACE")
                         can0.send_message(signals=can_payload, message_name='RPi')
                         print(f"RETURNED\n\t {can_payload}")
+                        time_prev = time_sent # make sure values are still updated
+                        temp_prev = temp
                         sleep(1)
                         continue
                     else:
