@@ -28,6 +28,8 @@ dbc_file_path = config['can']['dbc']
 
 # Cloud Values
 cloud_return_variables = config['cloud']['cloud_return_variables']
+cloud_warmup_period = config['cloud']['warmup_period']
+cloud_warmup_counter = 0
 CloudURL = os.getenv('CloudURL')
 
 # Globally define inital values for RLS
@@ -47,14 +49,15 @@ cloud = Cloud(URL=CloudURL, timeout=3, return_variables=cloud_return_variables)
 log_header = cloud_return_variables + ['time_recv']
 log = logger(directory_path='Logs/', file_headers=log_header)
 
-
+print("Main function will begin now,\nOnce CAN communication establish, DT will warmup with" \
+"[{cloud_warmup_period}] Iterations")
 # =================================================================
 # -------------------------      loop     -------------------------
 # =================================================================
 
 def main():
 
-    global internal_resistance, covariance, time_prev, temp_prev
+    global internal_resistance, covariance, time_prev, temp_prev, cloud_warmup_counter
 
     try:
         while True:
@@ -62,7 +65,7 @@ def main():
             received_frame = can0.receive_message(timeout=0.1)
 
             if received_frame:
-                print(received_frame)
+                
 
                 temp = received_frame.get('Battery_Temperature')
                 current = received_frame.get('Battery_Current')
@@ -74,6 +77,9 @@ def main():
                     time_prev = time()
                     sleep(0.1)
                     continue
+
+                if abs(current) < 5:
+                    continue # Low amps produce unreliable values and noise so skip
                 
                 time_sent = time()          # Remeber to assign this to time_prev after
                 dt = time_sent - time_prev
@@ -93,12 +99,18 @@ def main():
 
                 if cloud_response:
                     
-                    internal_resistance = float(
-                        "{:.5f}".format(cloud_response['internal_resistance']))
+                    if cloud_warmup_counter < cloud_warmup_period:  # A warmup period for Cloud controller
+                        if cloud_warmup_counter == cloud_warmup_period -2:
+                            print("\n INFO: Warmup Complete. Going Live...\n")
+                        cloud_warmup_counter += 1
+                        continue
+                    else:
+                        internal_resistance = float(
+                            "{:.5f}".format(cloud_response['internal_resistance']))
 
-                    can_payload = {'RPiBattery_Internal_Resistance': internal_resistance}
-                    can0.send_message(signals=can_payload, message_name='RPi')
-                    print(f"Successfully updated: {can_payload}")
+                        can_payload = {'RPiBattery_Internal_Resistance': internal_resistance}
+                        can0.send_message(signals=can_payload, message_name='RPi')
+                        print(f"Successfully updated: {can_payload}")
 
                     covariance = cloud_response['p']
                     time_prev = time_sent
