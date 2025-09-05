@@ -128,7 +128,9 @@ def main():
                     
                     log.append(data_to_log)
                 else:
-                    print("ERROR: No response from cloud")
+                    print("ERROR: No response from cloud") 
+                    time_prev = time_sent # make sure values are still updated
+                    temp_prev = temp
             else:
                 print("ERROR: NO CAN Received")
                 
