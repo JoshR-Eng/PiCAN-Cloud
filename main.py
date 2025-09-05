@@ -73,7 +73,7 @@ def main():
                 cooling_power = received_frame.get('BTM_Power')
 
                 print(f"\nRECEIVED"\
-                      "\n\tT: {temp}\n\tI: {current}\n\tRbat: {internal_resistance}"\
+                      f"\n\tT: {temp}\n\tI: {current}\n\tRbat: {internal_resistance}\n\t"\
                       "Pbtm: {cooling_power}")
 
                 if temp_prev is None or time_prev is None:
