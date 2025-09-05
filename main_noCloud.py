@@ -96,7 +96,8 @@ def main():
                     'innovation': None,
                     'time_recv': None,
                     'current':current,
-                    'dt': dt
+                    'dt': dt,
+                    'cooling power': cooling_power
                 }
                 log.append(data_to_log)
             
