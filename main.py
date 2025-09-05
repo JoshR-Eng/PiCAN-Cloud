@@ -100,6 +100,7 @@ def main():
 
                     can_payload = {'RPiBattery_Internal_Resistance': internal_resistance}
                     can0.send_message(signals=can_payload, message_name='RPi')
+                    print(f"Successfully updated: {can_payload}")
 
                     covariance = cloud_response['p']
                     time_prev = time_sent
