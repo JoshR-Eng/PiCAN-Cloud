@@ -46,7 +46,7 @@ can0 = CAN_Handler(channel='can0', bitrate=bitrate, dbc_file=dbc_file_path)
 
 cloud = Cloud(URL=CloudURL, timeout=3, return_variables=cloud_return_variables)
 
-log_header = cloud_return_variables + ['time_recv','current','dt']
+log_header = cloud_return_variables + ['time_recv','current','dt', 'cooling power']
 log = logger(directory_path='Logs/', file_headers=log_header)
 
 print(f"Main function will begin now,\nDT will warmup with" \
