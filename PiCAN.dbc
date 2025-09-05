@@ -37,12 +37,11 @@ BU_:
 
 
 BO_ 512 RPi: 2 Vector__XXX
- SG_ RPiBattery_Internal_Resistance : 0|12@1+ (1E-05,0) [0|0.04095] "" Vector__XXX
+ SG_ RPiBattery_Internal_Resistance : 0|16@1+ (1E-05,0) [0|0.04095] "" Vector__XXX
 
 BO_ 256 dSPACE: 8 Vector__XXX
- SG_ Ambient_Temperature : 44|4@1+ (1,287) [287|302] "" Vector__XXX
  SG_ BTM_Power : 48|16@1- (0.1,0) [-3276.8|3276.7] "" Vector__XXX
- SG_ Battery_Internal_Resistance : 32|12@1+ (1E-05,0) [0|0.04095] "" Vector__XXX
+ SG_ Battery_Internal_Resistance : 32|16@1+ (1E-05,0) [0|0.04095] "" Vector__XXX
  SG_ Battery_Temperature : 16|16@1+ (0.001,270) [270|335.535] "" Vector__XXX
  SG_ Battery_Current : 0|16@1- (0.01,0) [-327.68|327.67] "" Vector__XXX
 
@@ -73,6 +72,5 @@ BA_DEF_DEF_  "GenMsgSendType" "spontaneous";
 BA_DEF_DEF_  "GenSigInactiveValue" 0;
 BA_DEF_DEF_  "GenSigStartValue" 0;
 BA_ "DBName" "dt_can";
-BA_ "GenSigStartValue" SG_ 256 Ambient_Temperature 8;
 BA_ "GenSigStartValue" SG_ 256 Battery_Temperature 25000;
 

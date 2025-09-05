@@ -68,8 +68,6 @@ def main():
                 current = received_frame.get('Battery_Current')
                 internal_resistance = received_frame.get('Battery_Internal_Resistance')
                 cooling_power = received_frame.get('BTM_Power')
-                # temp_amb = received_frame.get('Ambient_Temperature') 
-                # ^Redundentt at the moment
 
                 if temp_prev is None or time_prev is None:
                     temp_prev = temp
