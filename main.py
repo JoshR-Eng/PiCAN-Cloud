@@ -50,7 +50,7 @@ log_header = cloud_return_variables + ['time_recv','current','dt']
 log = logger(directory_path='Logs/', file_headers=log_header)
 
 print(f"Main function will begin now,\nDT will warmup with" \
-" [{cloud_warmup_period}] Iterations")
+    f" [{cloud_warmup_period}] Iterations")
 # =================================================================
 # -------------------------      loop     -------------------------
 # =================================================================
@@ -83,6 +83,7 @@ def main():
                     continue
 
                 if abs(current) < 5:
+                    sleep(1)
                     continue # Low amps produce unreliable values and noise so skip
                 
                 time_sent = time()          # Remeber to assign this to time_prev after
@@ -107,6 +108,7 @@ def main():
                         if cloud_warmup_counter == cloud_warmup_period -2:
                             print("\n\n\n\t -------- Warmup Complete. Going Live... -------- \n\n\n")
                         cloud_warmup_counter += 1
+                        sleep(1)
                         continue
                     else:
                         internal_resistance = float(
