@@ -1,5 +1,5 @@
 import requests
-from datetime import timezone, datetime
+from time import time
 
 class Cloud:
     """
@@ -25,7 +25,7 @@ class Cloud:
         """
         try:
             response = requests.post(self.URL, json=payload, timeout=self.timeout)
-            client_recieve_time = datetime.now(timezone.utc)
+            client_recieve_time = time()
 
             if response.status_code == 200:
                 cloud_return = response.json()
