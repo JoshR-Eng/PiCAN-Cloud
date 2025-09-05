@@ -74,7 +74,7 @@ def main():
 
                 print(f"\nRECEIVED"\
                       f"\n\tT: {temp}\n\tI: {current}\n\tRbat: {internal_resistance}\n\t"\
-                      "Pbtm: {cooling_power}")
+                      f"Pbtm: {cooling_power}")
 
                 if temp_prev is None or time_prev is None:
                     temp_prev = temp
