@@ -87,46 +87,20 @@ def main():
                 
                 time_sent = time()          # Remeber to assign this to time_prev after
                 dt = time_sent - time_prev
-                
-                payload = {
-                    'time_sent': time_sent,
+
+                data_to_log = {
+                    'time_sent':time_sent,
                     'temp': temp,
-                    'temp_prev': temp_prev,
-                    'current': current,
-                    'cooling_power': cooling_power,
-                    'dt': dt,
                     'internal_resistance': internal_resistance,
-                    'p': covariance,
+                    'p': None,
+                    'innovation': None,
+                    'time_recv': None,
+                    'current':current,
+                    'dt': dt
                 }
-
-                cloud_response = cloud.send_dataset(payload=payload)
-
-                if cloud_response:
-                    print("Cloud Responded")
-                    if cloud_warmup_counter < cloud_warmup_period:  # A warmup period for Cloud controller
-                        if cloud_warmup_counter == cloud_warmup_period -2:
-                            print("\n\n\n\t -------- Warmup Complete. Going Live... -------- \n\n\n")
-                        cloud_warmup_counter += 1
-                        continue
-                    else:
-                        internal_resistance = float(
-                            "{:.5f}".format(cloud_response['internal_resistance']))
-
-                        can_payload = {'RPiBattery_Internal_Resistance': internal_resistance}
-                        can0.send_message(signals=can_payload, message_name='RPi')
-                        print(f"RETURNED\n\t {can_payload}")
-
-                    covariance = cloud_response['p']
-                    time_prev = time_sent
-                    temp_prev = temp
-
-                    data_to_log = cloud_response
-                    data_to_log['current'] = current
-                    data_to_log['dt'] = dt
-                    
-                    log.append(data_to_log)
-                else:
-                    print("ERROR: No response from cloud")
+                log.append(data_to_log)
+            
+                time_prev = time_sent
             else:
                 print("ERROR: NO CAN Received")
                 
