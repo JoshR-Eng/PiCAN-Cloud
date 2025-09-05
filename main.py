@@ -117,7 +117,8 @@ def main():
                         print(f"Sent {can_payload} back to dSPACE")
                         can0.send_message(signals=can_payload, message_name='RPi')
                         print(f"RETURNED\n\t {can_payload}")
-                        time_prev = time_sent # make sure values are still updated
+                        covariance = cloud_response['p']
+                        time_prev = time_sent
                         temp_prev = temp
                         sleep(1)
                         continue
