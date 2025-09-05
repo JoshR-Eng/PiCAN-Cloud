@@ -20,6 +20,7 @@ cloud:
 can:
   bitrate: 500000
   dbc: PiCAN.dbc
+  rbat_initial: 0.002
 
 rls:
   internal_resistance: 0.0020664

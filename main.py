@@ -25,6 +25,7 @@ with open('config.yaml', 'r') as yaml_config:
 # CAN Values
 bitrate = config['can']['bitrate']
 dbc_file_path = config['can']['dbc']
+rbat_initial = config['can']['rbat_initial']
 
 # Cloud Values
 cloud_return_variables = config['cloud']['cloud_return_variables']
@@ -108,6 +109,9 @@ def main():
                         if cloud_warmup_counter == cloud_warmup_period -2:
                             print("\n\n\n\t -------- Warmup Complete. Going Live... -------- \n\n\n")
                         cloud_warmup_counter += 1
+                        can_payload = {'RPiBattery_Internal_Resistance': rbat_initial}
+                        can0.send_message(signals=can_payload, message_name='RPi')
+                        print(f"RETURNED\n\t {can_payload}")
                         sleep(1)
                         continue
                     else:
