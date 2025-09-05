@@ -49,8 +49,8 @@ cloud = Cloud(URL=CloudURL, timeout=3, return_variables=cloud_return_variables)
 log_header = cloud_return_variables + ['time_recv']
 log = logger(directory_path='Logs/', file_headers=log_header)
 
-print("Main function will begin now,\nOnce CAN communication establish, DT will warmup with" \
-"[{cloud_warmup_period}] Iterations")
+print(f"Main function will begin now,\nDT will warmup with" \
+" [{cloud_warmup_period}] Iterations")
 # =================================================================
 # -------------------------      loop     -------------------------
 # =================================================================
@@ -71,6 +71,10 @@ def main():
                 current = received_frame.get('Battery_Current')
                 internal_resistance = received_frame.get('Battery_Internal_Resistance')
                 cooling_power = received_frame.get('BTM_Power')
+
+                print(f"\nRECEIVED"\
+                      "\n\tT: {temp}\n\tI: {current}\n\tRbat: {internal_resistance}"\
+                      "Pbtm: {cooling_power}")
 
                 if temp_prev is None or time_prev is None:
                     temp_prev = temp
@@ -98,7 +102,7 @@ def main():
                 cloud_response = cloud.send_dataset(payload=payload)
 
                 if cloud_response:
-                    
+                    print("Cloud Responded")
                     if cloud_warmup_counter < cloud_warmup_period:  # A warmup period for Cloud controller
                         if cloud_warmup_counter == cloud_warmup_period -2:
                             print("\n INFO: Warmup Complete. Going Live...\n")
@@ -110,7 +114,7 @@ def main():
 
                         can_payload = {'RPiBattery_Internal_Resistance': internal_resistance}
                         can0.send_message(signals=can_payload, message_name='RPi')
-                        print(f"Successfully updated: {can_payload}")
+                        print(f"RETURNED\n\t {can_payload}")
 
                     covariance = cloud_response['p']
                     time_prev = time_sent
