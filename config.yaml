@@ -24,4 +24,4 @@ can:
 
 rls:
   internal_resistance: 0.0020664
-  covariance: 1
+  covariance: 0.001
