@@ -10,4 +10,4 @@ pip3 install -r requirements.txt
 
 # Run CAN test
 echo "Starting CAN Test..."
-python main_noCloud.py
+python main.py
