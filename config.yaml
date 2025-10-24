@@ -23,5 +23,4 @@ can:
   rbat_initial: 0.002
 
 rls:
-  internal_resistance: 0.0020664
   covariance: 0.001
